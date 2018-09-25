@@ -39,7 +39,7 @@ class TestNN(unittest.TestCase):
         train_data, val_data, test_data = loader.load_data_wrapper()
         sizes = [784, 30, 30, 10]
         model = nn.NueralNetwork(sizes)
-        model.train(train_data, 10, 0.1, 25, test_data)
+        model.train(train_data, 30, 3.0, 25, test_data)
 
 if __name__ == '__main__':
     unittest.main()
