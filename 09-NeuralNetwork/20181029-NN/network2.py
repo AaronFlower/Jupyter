@@ -7,31 +7,31 @@ class Cost(object):
     def __init__(self):
         pass
 
-    def cost(self, a, y):
+    def cost(a, y):
         raise NotImplementedError('Subclass must implement this cost abstract method')
 
-    def delta(self, a, y, z, activate_prime):
+    def delta(a, y, z, activate_prime):
         raise NotImplementedError('Subclass must implement this delta abstract method for output layer')
 
 class QuadraticCost(Cost):
-    def cost(self, a, y):
+    def cost(a, y):
         '''
             Quadratic Cost with an output `a` and desired output `y`
         '''
         return 0.5 * (a - y)
 
-    def delta(self, a, y, z, activate_prime):
+    def delta(a, y, z, activate_prime):
         '''
             Compute the output delta
         '''
         return (a - y) * activate_prime(z)
 
 class CrossEntropyCost(Cost):
-    def cost(self, a, y):
+    def cost(a, y):
         base = -[y * np.log(a) + (1 - y) * np.log(1 - a)]
         return np.sum(np.nan_to_num(base))
 
-    def delta(self, a, y, z, activate_prime):
+    def delta(a, y, z, activate_prime):
         return (a - y)
 
 class NeuralNetwork (object):
@@ -105,7 +105,7 @@ class NeuralNetwork (object):
             random.shuffle(train_data)
             mini_batches = [train_data[k:k + mini_batch_size] for k in range(0, n, mini_batch_size)]
             for mini_batch in mini_batches:
-                self.update_mini_batch(mini_batch, alpha, lmbda)
+                self.update_mini_batch(mini_batch, alpha, lmbda, n)
 
             if test_data:
                 print('Epoch {0}: {1}/{2}'.format(i, self.evaluate(test_data), ntest))
@@ -113,7 +113,52 @@ class NeuralNetwork (object):
                 print('Epoch {0} complete!'.format(i))
 
         return
-    def update_mini_batch(self, mini_batch, alpha, lmbda):
-        pass
 
+    def update_mini_batch(self, mini_batch, alpha, lmbda, n):
+        '''
+        Using mini batch gradient descent to update weights and biases.
+        '''
+        nabla_w = [np.zeros(w.shape) for w in self.weights]
+        nabla_b = [np.zeros(b.shape) for b in self.biases]
+
+        nbatch = len(mini_batch)
+
+        for X, y in mini_batch:
+            delta_nabla_w, delta_nabla_b = self.bp(X, y)
+
+            nabla_w = [w + dw for w, dw in zip(nabla_w, delta_nabla_w)]
+            nabla_b = [b + db for b, db in zip(nabla_b, delta_nabla_b)]
+
+        anb = alpha / nbatch
+        aln = alpha * lmbda / n
+        self.weights = [w - aln * w - anb * nw for w, nw in zip(self.weights, nabla_w)]
+        self.biases = [b - anb * nb for b, nb in zip(self.biases, nabla_b)]
+
+        return
+
+    def bp(self, X, y):
+        '''
+        Use backpropagation to compute weights and biases for every layers
+        '''
+        nabla_w = [np.zeros(w.shape) for w in self.weights]
+        nabla_b = [np.zeros(b.shape) for b in self.biases]
+
+        a = X
+        cache_a = [a]
+        cache_z = []
+        for w, b in zip(self.weights, self.biases):
+            z = np.dot(w, a) + b
+            a = self.activate(z)
+            cache_z.append(z)
+            cache_a.append(a)
+
+        delta = self.cost.delta(a, y, z, self.activate_prime)
+        nabla_w[-1] = np.dot(delta, cache_a[-2].T)
+        nabla_b[-1] = delta
+
+        for l in range(2, self.num_layers):
+            delta = np.dot(self.weights[-l + 1].T, delta) * self.activate_prime(cache_z[-l])
+            nabla_w[-l] = np.dot(delta, cache_a[-l -1].T)
+            nabla_b[-l] = delta
+        return nabla_w, nabla_b
 
