@@ -4,3 +4,8 @@ octave-workspace
 __pycache__/
 Coursera-ML/
 octave-workspace
+
+checkpoints/
+*.h5
+training_1/
+training_2/
