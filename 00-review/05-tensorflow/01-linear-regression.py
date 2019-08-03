@@ -2,6 +2,7 @@ import numpy as np
 import tensorflow.compat.v1 as tf
 import matplotlib.pyplot as plt
 
+
 def get_data():
     x = np.linspace(-1, 1, 100)
     y = 2 * x + 0.3 * np.random.randn(*x.shape)
@@ -15,8 +16,8 @@ def model(graph):
         y = tf.placeholder(dtype=tf.float32, shape=(None,), name='y')
 
         with tf.variable_scope('LinReg'):
-            w = tf.Variable(np.random.rand(), dtype=tf.float32, name="wieght")
-            b = tf.Variable(np.random.rand(), dtype=tf.float32, name="bias")
+            w = tf.Variable(np.random.rand(), dtype=tf.float32, name='wieght')
+            b = tf.Variable(np.random.rand(), dtype=tf.float32, name='bias')
 
             pred = tf.multiply(w, x) + b
             loss = tf.reduce_mean(0.5 * tf.square(y - pred))
@@ -43,7 +44,7 @@ def run():
 
             for i in range(epochs):
                 loss_val, _ = sess.run([loss, optimizer], feed_dict)
-                print("epoch " , i, " : ",  loss_val)
+                print('Epoch %3d : %1.3f' % (i, loss_val))
 
             y_pred = sess.run(pred, {x: x_train})
 
@@ -53,5 +54,8 @@ def run():
     plt.legend()
     plt.show()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
+    """
+    #  TODO:  learning_rate 0.1, 0.01, 0.001 comparison  #
+    """
     run()
