@@ -14,7 +14,7 @@ def load_dataset(epochs=1, batch_size=100):
 
     train_dataset = tf.data.Dataset.from_tensor_slices(train)
     train_dataset = train_dataset.map(
-        lambda x, y: (tf.reshape(x, shape=(784,)), tf.one_hot(y, 10))
+        lambda x, y: (tf.reshape(x / 255, shape=(784,)), tf.one_hot(y, 10))
     )
     # break a line of chained methods
     train_dataset = (
@@ -25,7 +25,7 @@ def load_dataset(epochs=1, batch_size=100):
 
     test_dataset = tf.data.Dataset.from_tensor_slices(test)
     test_dataset = test_dataset.map(
-        lambda x, y: (tf.reshape(x, shape=(784,)), tf.one_hot(y, 10))
+        lambda x, y: (tf.reshape(x / 255, shape=(784,)), tf.one_hot(y, 10))
     ).batch(batch_size * 10)
 
     return (train_dataset, n_train_samples), (test_dataset, n_test_samples)
