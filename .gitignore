@@ -12,3 +12,5 @@ training_2/
 logs
 *.tfrecord
 *.tfrecords
+data
+.DS_Store
