@@ -100,6 +100,8 @@ $ hadoop jar /usr/local/Cellar/hadoop/3.1.2/libexec/share/hadoop/tools/lib/hadoo
 -input /user/eason/gutenberg/*.txt -output /user/eason/gutenberg-output
 ```
 
+- `-file` 是将本地的 `mapper.py` 和 `reducer.py` 文件都上传到所有的计算节点上(tasktracker node).
+
 
 如果使用 zsh 可能会报  `zsh on mathes` 错误，我们可以执行下 `setopt +o nomatch`  后再运行。
 
@@ -108,3 +110,18 @@ $ hadoop jar /usr/local/Cellar/hadoop/3.1.2/libexec/share/hadoop/tools/lib/hadoo
 ```
 $ hdfs dfs -ls /user/eason/gutenberg-output
 ```
+
+### Todos
+
+- [ ] Use geneator
+- [ ] find top k
+
+### Hadoop 关于 Top K 的问题
+
+- Top K value, 可以在每个计算结点内先出 top k, 然后最后 reducer 时找出最大的 top k.
+- Top k frequent words, 那也应该先统计完 words 之后，然后再来一组 mapper, reducer 才能找出 top k.
+
+### References
+
+1. [Writing An Hadoop MapReduce Program In Python](https://www.michael-noll.com/tutorials/writing-an-hadoop-mapreduce-program-in-python/)
+2. [text](http://address)
