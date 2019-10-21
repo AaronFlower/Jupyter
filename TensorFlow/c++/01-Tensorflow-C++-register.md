@@ -278,7 +278,7 @@ class OpDefBuilder {
 };
 ```
 
-上面除了构造函数需要传入 `op_name` 外，只有 `Input, Output, Attr, SetShapeFn, Doc, Deprecated` 需要我们传入参数。Doc 的功能顾名思义，Inpu, Output, Attr 需要我们按 `spec` 规则来传入符合规范的字符串，而 `SetShapeFn` 需要我们传入一个回调函数。
+上面除了构造函数需要传入 `op_name` 外，只有 `Input, Output, Attr, SetShapeFn, Doc, Deprecated` 需要我们传入参数。Doc 的功能顾名思义，Input, Output, Attr 需要我们按 `spec` 规则来传入符合规范的字符串，而 `SetShapeFn` 需要我们传入一个回调函数。
 
 - `Attr(string spec);` 为 `OpDefBuilder` [添加属性](https://www.tensorflow.org/guide/extend/op#op_registration)。
 
@@ -374,6 +374,7 @@ REGISTER_KERNEL_BUILDER(
     .Device(DEVICE_CPU)
     .TypeConstraint<int32>("T"),
     ZeroOutOpInt32);
+
 REGISTER_KERNEL_BUILDER(
     Name("ZeroOut")
     .Device(DEVICE_CPU)
@@ -401,7 +402,7 @@ REGISTER_OP("ZeroOut")
   ShapeHandle input(int64 idx) const { return inputs_[idx]; }
   ```
 
-  那么我们不禁要着呢 `inputs_` 是那里定义的，在那里赋值的？
+  那么我们不禁要问 `inputs_` 是那里定义的，在那里赋值的？
 
   这时的 `inputs_` 其实是基于我们的在定义操作时生成的，在注册时调用 `.Input("zeroed: int32")` 方法时，其源码是这样的：
 
